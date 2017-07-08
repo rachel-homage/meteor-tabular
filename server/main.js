@@ -137,15 +137,18 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
       agregate.push({$lookup:_.pick(v,'from','localField','foreignField','as')});
     });
     agregate.push({$match:selector});
+    let agregate2 = agregate.slice(0);
+    agregate2.push({
+        $group:{_id:null,count: {$sum: 1 }}
+    });
     if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
     agregate.push({$skip:findOptions.skip});
     agregate.push({$limit:findOptions.limit});
     filteredCursor = table.collection.find();
     let filteredCursorAgregated = table.collection.aggregate(agregate)
     filteredRecordIds = filteredCursorAgregated.map(doc => doc._id);
-    //countRows = filteredCursorAgregated.length;
-    countRows = filteredRecordIds.length + skip + 1;
-    //console.log(filteredRecordIds);
+    let countCursor = table.collection.aggregate(agregate2);
+    countRows = countCursor[0].count;
   }else{
     //IDs the regular way
     filteredCursor = table.collection.find(selector, findOptions);
@@ -214,12 +217,17 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
           agregate.push({$lookup:_.pick(v,'from','localField','foreignField','as')});
         });
         agregate.push({$match:selector});
+        let agregate2 = agregate.slice(0);
+        agregate2.push({
+          $group:{_id:null,count: {$sum: 1 }}
+        });
         if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
         agregate.push({$skip:findOptions.skip});
         agregate.push({$limit:findOptions.limit});
         const filteredCursor = table.collection.aggregate(agregate)
         filteredRecordIds = filteredCursor.map(doc => doc._id);
-        countRows = filteredCursor.length;
+        let countCursor = table.collection.aggregate(agregate2);
+        countRows = countCursor[0].count;
       }else{
         filteredRecordIds.push(id);
       }
@@ -233,12 +241,17 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
           agregate.push({$lookup:_.pick(v,'from','localField','foreignField','as')});
         });
         agregate.push({$match:selector});
+        let agregate2 = agregate.slice(0);
+        agregate2.push({
+          $group:{_id:null,count: {$sum: 1 }}
+        });
         if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
         agregate.push({$skip:findOptions.skip});
         agregate.push({$limit:findOptions.limit});
         const filteredCursor = table.collection.aggregate(agregate)
         filteredRecordIds = filteredCursor.map(doc => doc._id);
-        countRows = filteredCursor.length;
+        let countCursor = table.collection.aggregate(agregate2);
+        countRows = countCursor[0].count;
       }else{
         // _.findWhere is used to support Mongo ObjectIDs
         filteredRecordIds = _.without(filteredRecordIds, _.findWhere(filteredRecordIds, id));
@@ -264,3 +277,4 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
 });
 
 export default Tabular;
+
