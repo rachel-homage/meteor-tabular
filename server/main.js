@@ -148,7 +148,7 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
     let filteredCursorAgregated = table.collection.aggregate(agregate)
     filteredRecordIds = filteredCursorAgregated.map(doc => doc._id);
     let countCursor = table.collection.aggregate(agregate2);
-    countRows = countCursor[0].count;
+    countRows = countCursor.length > 0 ? countCursor[0].count : 0;
   }else{
     //IDs the regular way
     filteredCursor = table.collection.find(selector, findOptions);
@@ -227,7 +227,7 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
         const filteredCursor = table.collection.aggregate(agregate)
         filteredRecordIds = filteredCursor.map(doc => doc._id);
         let countCursor = table.collection.aggregate(agregate2);
-        countRows = countCursor[0].count;
+        countRows = countCursor.length > 0 ? countCursor[0].count : 0;
       }else{
         filteredRecordIds.push(id);
       }
@@ -251,7 +251,7 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
         const filteredCursor = table.collection.aggregate(agregate)
         filteredRecordIds = filteredCursor.map(doc => doc._id);
         let countCursor = table.collection.aggregate(agregate2);
-        countRows = countCursor[0].count;
+        countRows = countCursor.length > 0 ? countCursor[0].count : 0;
       }else{
         // _.findWhere is used to support Mongo ObjectIDs
         filteredRecordIds = _.without(filteredRecordIds, _.findWhere(filteredRecordIds, id));
