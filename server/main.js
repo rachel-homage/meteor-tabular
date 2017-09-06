@@ -144,8 +144,8 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
     if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
     agregate.push({$skip:findOptions.skip});
     agregate.push({$limit:findOptions.limit});
-    filteredCursor = table.collection.find();
-    let filteredCursorAgregated = table.collection.aggregate(agregate)
+    filteredCursor = table.collection.find({}, findOptions);
+    let filteredCursorAgregated = table.collection.aggregate(agregate);
     filteredRecordIds = filteredCursorAgregated.map(doc => doc._id);
     let countCursor = table.collection.aggregate(agregate2);
     countRows = countCursor.length > 0 ? countCursor[0].count : 0;
@@ -224,8 +224,9 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
         if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
         agregate.push({$skip:findOptions.skip});
         agregate.push({$limit:findOptions.limit});
-        const filteredCursor = table.collection.aggregate(agregate)
-        filteredRecordIds = filteredCursor.map(doc => doc._id);
+        const filteredCursor = table.collection.find({}, findOptions);
+        let filteredCursorAgregated = table.collection.aggregate(agregate);
+        filteredRecordIds = filteredCursorAgregated.map(doc => doc._id);
         let countCursor = table.collection.aggregate(agregate2);
         countRows = countCursor.length > 0 ? countCursor[0].count : 0;
       }else{
@@ -248,8 +249,9 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
         if(!_.isEmpty(tempSort)) agregate.push({$sort:tempSort});
         agregate.push({$skip:findOptions.skip});
         agregate.push({$limit:findOptions.limit});
-        const filteredCursor = table.collection.aggregate(agregate)
-        filteredRecordIds = filteredCursor.map(doc => doc._id);
+        const filteredCursor = table.collection.find({}, findOptions);
+        let filteredCursorAgregated = table.collection.aggregate(agregate);
+        filteredRecordIds = filteredCursorAgregated.map(doc => doc._id);
         let countCursor = table.collection.aggregate(agregate2);
         countRows = countCursor.length > 0 ? countCursor[0].count : 0;
       }else{
