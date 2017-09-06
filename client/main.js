@@ -185,7 +185,7 @@ Template.tabular.onRendered(function () {
 
     //console.log('currentData autorun', data);
 
-    if (!data) return;
+    if (!data || template.tabular.selector === data.selector) return;
 
     // We get the current TabularTable instance, and cache it on the
     // template instance for access elsewhere
